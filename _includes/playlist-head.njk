@@ -1,0 +1,292 @@
+<script>
+  window.playTrack = window.playTrack || function(){};
+</script>
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-migrate-1.2.1.js"></script>
+<script src="/js/soundmanager2-nodebug-jsmin.js"></script>
+<script>soundManager.setup({url: "/swf/", flashVersion: 9, onready: function() {soundManager.isReady=true;}});</script>
+
+<style>
+#whydMessageContainer {
+	position: fixed;
+	text-align: center;
+	top: 50px;
+	width: 100%;
+	background: #A4CF5D;
+	z-index: 10;
+	overflow: hidden;
+	height: 0px;
+}
+
+#whydMessageContainer.error {
+	background: #BC162A;
+}
+
+#whydMessageContainer > div {
+	position: relative;
+	top: 10px;
+	display: inline;
+	color: white;
+	font-size: 14px;
+	padding-left: 24px;
+}
+
+
+
+body.playing_Bandcamp #playerContainer,
+body.playing_SoundCloud #playerContainer,
+body.playing_Deezer #playerContainer,
+body.reduced #playerContainer {
+	/*position: fixed;*/
+	left: 100% !important;
+	top: 100% !important;
+	/*width: 1px;
+	height: 1px;*/
+	opacity: 0.01;
+}
+
+/* player bar */
+
+#whydPlayer {
+	display: none;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-color: #1A1A1A;
+	z-index: 10000;
+	overflow: visible;
+	filter: alpha(opacity=98);
+	-khtml-opacity: .98;
+	-moz-opacity: .98;
+	opacity: .98;
+}
+
+#whydPlayer > .buttons {
+	overflow: auto;
+	padding: 0 20px;
+	padding-bottom: 6px;
+	outline: none;
+}
+
+#whydPlayer > .buttons > * {
+	float: left;
+}
+
+#whydPlayer button {
+	margin-top: 5px;
+	float: left;
+	width: 32px;
+	height: 43px;
+	border: none;
+	cursor: pointer;
+	margin-right: 5px;
+
+}
+
+#whydPlayer #btnPlay,
+#whydPlayer #btnPrev,
+#whydPlayer #btnPlay.playing,
+#whydPlayer #btnNext,
+#whydPlayer #btnRepost,
+#whydPlayer #btnLike,
+#whydPlayer #btnComment,
+#whydPlayer #btnVideo,
+#whydPlayer #btnFullscreen,
+#whydPlayer #btnShuffle {
+	outline:none;
+}
+
+/* other buttons */
+
+#whydPlayer #btnRepost,
+#whydPlayer #btnLike,
+#whydPlayer #btnComment,
+#whydPlayer #btnVideo,
+#whydPlayer #btnFullscreen,
+#whydPlayer #btnShuffle {
+	background: none;
+	padding: 5px;
+	height: auto;
+	width: auto;
+	margin: 0;
+	margin-top: 12px;
+}
+
+#whydPlayer #btnRepost  div,
+#whydPlayer #btnLike    div,
+#whydPlayer #btnComment div,
+#whydPlayer #btnVideo    div,
+#whydPlayer #btnFullscreen div,
+#whydPlayer #btnShuffle div {
+	height: 16px;
+	width: 16px;
+}
+
+#whydPlayer #btnFullscreen {
+	margin-left: 10px;
+	border-left: 1px solid #333;
+	padding-left: 10px;
+}
+
+body.playing_Bandcamp #whydPlayer #btnVideo div,
+body.playing_SoundCloud #whydPlayer #btnVideo div,
+body.playing_Deezer #whydPlayer #btnVideo div,
+body.reduced #whydPlayer #btnVideo div {
+	background-color: red;
+}
+
+body.playing_Bandcamp #whydPlayer #btnVideo > div,
+body.playing_Bandcamp #whydPlayer #btnFullscreen > div,
+body.playing_SoundCloud #whydPlayer #btnVideo > div,
+body.playing_SoundCloud #whydPlayer #btnFullscreen > div,
+body.playing_Deezer #whydPlayer #btnVideo > div,
+body.playing_Deezer #whydPlayer #btnFullscreen > div {
+	opacity: 0.2;
+}
+
+/* other elements */
+
+#whydPlayer a {
+	color: white;
+	font-weight: normal;
+}
+
+#whydPlayer #trackTitle {
+	font-size: 12px;
+	color: #ddd;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 400px;
+	margin-top: 17px;
+	margin-left: 8px;
+}
+
+#whydPlayer #progressTimer {
+	margin-left: 10px;
+	color: #777;
+	font-size: 10px;
+	margin-top: 19px;
+}
+
+#whydPlayer #progressTrack {
+	width: 100%;
+	position: relative;
+	top: -3px;
+	background: gray;
+	cursor: ew-resize;
+	height: 4px;
+	z-index: 5;
+}
+
+#whydPlayer #progressTrack > #progressBar {
+	width: 0px;
+	height: 4px;
+	background: #3177AF;
+}
+
+#whydPlayer #progressTrack > #progressCursor {
+	position: absolute;
+	top: -3px;
+	left: -5px;
+	width: 16px;
+	height: 16px;
+	background-color: #3177AF;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+#whydPlayer .rightButtons {
+	float: right;
+}
+
+#whydPlayer:hover #progressTrack {
+	height:10px;
+	-webkit-transition: all .1s ease-in-out;
+	-moz-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+#whydPlayer:hover #progressTrack > #progressBar {
+	height:10px;
+	-webkit-transition: all .1s ease-in-out;
+	-moz-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+
+/* volume control */
+
+#whydPlayer .volumePanel {
+	float: left;
+	position: relative;
+	padding-top: 17px;
+	margin-left: 16px;
+}
+
+#whydPlayer .volumePanel > div {
+	float: left;
+}
+
+#whydPlayer .volumePanel .volume {
+	width: 16px;
+	height: 16px;
+}
+
+#whydPlayer .volumePanel .volume.half {
+	background-position: 0 -17px;
+}
+
+#whydPlayer .volumePanel .volume.mute {
+	background-position: 0 -34px;
+}
+
+#whydPlayer .volumePanel .progressTrack {
+	margin: 5px 8px;
+	position: relative;
+	width: 40px;
+	height: 3px;
+	background: gray;
+}
+
+#whydPlayer .volumePanel .progressTrack > .progressBar {
+	height: 100%;
+	background: white;
+}
+
+#whydPlayer .volumePanel .progressTrack > .progressCursor {
+	position: absolute;
+	top: -2px;
+	right: -6px;
+	width: 8px;
+	height: 8px;
+	background-color: white;
+		border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+#whydPlayer .progressTrack > .progressCursor {
+	display: none;
+}
+
+#whydPlayer .progressTrack.dragging > .progressCursor,
+#whydPlayer:hover .progressTrack > .progressCursor {
+	display: block;
+}
+
+#whydPlayer #trackDragPos {
+	display: none;
+	position: absolute;
+	background-color: #1A1A1A;
+	padding: 2px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	top: -30px;
+	left: 0;
+	color: #ddd;
+}
+</style>

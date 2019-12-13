@@ -1,0 +1,62 @@
+---
+layout: layouts/base.njk
+pageClass: playlist
+---
+
+<a href="javascript:window.whydPlayer.playAll();">Play all</a>
+
+<div class="posts">
+
+  {% for track in tracks %}
+	<div class="post"
+			 data-pid="{{ track._id }}"
+			 data-initialpid="{{ track.repost.pId }}">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="{{ track.eId }}"
+			 onclick="return playTrack(this);"
+			 >
+			{# <img src="{{ track.img }}"> #}
+			<div class="play">
+        <h2>{{ track.name }}</h2>
+      </div>
+		</a>
+
+	</div>
+	{% endfor %}
+
+</div>
+
+<div id="playerContainer">
+	<div id="playerContainerSub">
+		{# <div id="playerClose" onclick="window.whydPlayer.toggleVideo();" title="Hide"></div> #}
+		{# <div id="playBtnOverlay" onclick="window.whydPlayer.playPause();"></div> #}
+	</div>
+</div>
+<div id="whydPlayer">
+  <div id="progressTrack" class="progressTrack">
+  	<div id="progressBar" class="progressBar"></div>
+  	<div id="progressCursor" class="progressCursor"></div>
+  </div>
+  <div class="rightButtons buttons">
+  	{# <div id="btnShuffle" onclick="whydPlayer.toggleShuffle()" title="Shuffle mode"><div></div></div> #}
+  	<div class="volumePanel">
+  		<div class="volume">Volume</div>
+  		<div id="volumeTrack" class="progressTrack">
+  			<div class="progressBar"></div>
+  			<div class="progressCursor"></div>
+  		</div>
+  	</div>
+  	{# <div id="btnFullscreen" onclick="whydPlayer.toggleFullscreen()" title="Fullscreen"><div></div></div> #}
+  </div>
+  <div class="progressPanel buttons">
+  	<button id="btnPrev" onclick="whydPlayer.prev()">Prev</button>
+  	<button id="btnPlay" onclick="whydPlayer.playPause()">Play pause</button>
+  	<button id="btnNext" onclick="whydPlayer.next()">Next</button>
+  	<span id="trackTitle">(none)</span>
+  	<span id="progressTimer"></span>
+  </div>
+  <div id="trackDragPos"></div>
+</div>

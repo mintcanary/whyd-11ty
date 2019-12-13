@@ -1,0 +1,16 @@
+{
+  "name": "whyd-11ty",
+  "version": "1.0.0",
+  "description": "Static version of Openwhyd",
+  "scripts": {
+    "build": "npx eleventy"
+  },
+  "author": {
+     "name": "Sam Smith",
+     "url": "https://smth.uk/"
+   },
+  "license": "MIT",
+  "devDependencies": {
+    "@11ty/eleventy": "^0.9.0"
+  }
+}

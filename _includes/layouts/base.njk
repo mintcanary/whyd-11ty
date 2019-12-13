@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    {% if pageClass =="playlist" %}
+    {% include "playlist-head.njk" %}
+    {% endif %}
+  </head>
+  <body>
+
+    <div class="container">
+      {{ content | safe }}
+    </div>
+
+    {% if pageClass =="playlist" %}
+    {% include "playlist-footer.njk" %}
+    {% endif %}
+  </body>
+</html>
