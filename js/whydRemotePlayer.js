@@ -65,7 +65,13 @@
 
   window.addEventListener('message', function(e) {
     if (e.origin == ORIGIN) {
-      var message = JSON.parse(e.data);
+      try {
+				var message = JSON.parse(e.data);
+			} catch (err) {
+				console.warn('ignoring parse error from whyRemotesPlayer.js', err);
+				console.log('received payload:', e.data);
+				return;
+			}
       var method = message.code;
       var args = message.data;
       //console.log("[iframe] parent sends:", method, args);

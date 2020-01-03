@@ -32,7 +32,13 @@ function YoutubeIframePlayer(){
 		this.label = "Youtube";
 		window.addEventListener('message', function(e) {
 			if (e.origin === IFRAME_HOST) {
-				var message = JSON.parse(e.data);
+				try {
+					var message = JSON.parse(e.data);
+				} catch (err) {
+					console.warn('ignoring parse error from playem-youtube-iframe-patch.js', err);
+					console.log('received payload:', e.data);
+					return;
+				}
 				var param = message.data[0];
 				that.iframeReady = true;
 		        //for (var i in message.data)
@@ -115,7 +121,7 @@ function YoutubeIframePlayer(){
 	Player.prototype.resume = function() {
 		this.safeCall('resume');
 	}
-	
+
 	Player.prototype.stop = function() {
 		this.iframeReady = false;
 		this.safeCall("stop");
@@ -127,15 +133,15 @@ function YoutubeIframePlayer(){
 			console.log("youtube iframe stop:");
 		}
 	}
-	
+
 	Player.prototype.getTrackPosition = function(callback) {
 		this.safeCall('getTrackPosition'); // -> will call onTrackInfo()
 	};
-	
+
 	Player.prototype.setTrackPosition = function(pos) {
 		this.safeCall("setTrackPosition", pos);
 	};
-	
+
 	Player.prototype.setVolume = function(vol) {
 		this.safeCall('setVolume', vol);
 	};
