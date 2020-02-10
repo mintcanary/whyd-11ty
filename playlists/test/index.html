@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test playlist</title>
+    
+    <script>
+  window.playTrack = window.playTrack || function(){};
+</script>
+<script src="/js/jquery-1.10.2.min.js"></script>
+<script src="/js/jquery-migrate-1.2.1.js"></script>
+<script src="/js/soundmanager2-nodebug-jsmin.js"></script>
+<script>soundManager.setup({url: "/swf/", flashVersion: 9, onready: function() {soundManager.isReady=true;}});</script>
+
+<style>
+#whydMessageContainer {
+	position: fixed;
+	text-align: center;
+	top: 50px;
+	width: 100%;
+	background: #A4CF5D;
+	z-index: 10;
+	overflow: hidden;
+	height: 0px;
+}
+
+#whydMessageContainer.error {
+	background: #BC162A;
+}
+
+#whydMessageContainer > div {
+	position: relative;
+	top: 10px;
+	display: inline;
+	color: white;
+	font-size: 14px;
+	padding-left: 24px;
+}
+
+
+
+body.playing_Bandcamp #playerContainer,
+body.playing_SoundCloud #playerContainer,
+body.playing_Deezer #playerContainer,
+body.reduced #playerContainer {
+	/*position: fixed;*/
+	left: 100% !important;
+	top: 100% !important;
+	/*width: 1px;
+	height: 1px;*/
+	opacity: 0.01;
+}
+
+/* player bar */
+
+#whydPlayer {
+	display: none;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	background-color: #1A1A1A;
+	z-index: 10000;
+	overflow: visible;
+	filter: alpha(opacity=98);
+	-khtml-opacity: .98;
+	-moz-opacity: .98;
+	opacity: .98;
+}
+
+#whydPlayer > .buttons {
+	overflow: auto;
+	padding: 0 20px;
+	padding-bottom: 6px;
+	outline: none;
+}
+
+#whydPlayer > .buttons > * {
+	float: left;
+}
+
+#whydPlayer button {
+	margin-top: 5px;
+	float: left;
+	width: 32px;
+	height: 43px;
+	border: none;
+	cursor: pointer;
+	margin-right: 5px;
+
+}
+
+#whydPlayer #btnPlay,
+#whydPlayer #btnPrev,
+#whydPlayer #btnPlay.playing,
+#whydPlayer #btnNext,
+#whydPlayer #btnRepost,
+#whydPlayer #btnLike,
+#whydPlayer #btnComment,
+#whydPlayer #btnVideo,
+#whydPlayer #btnFullscreen,
+#whydPlayer #btnShuffle {
+	outline:none;
+}
+
+/* other buttons */
+
+#whydPlayer #btnRepost,
+#whydPlayer #btnLike,
+#whydPlayer #btnComment,
+#whydPlayer #btnVideo,
+#whydPlayer #btnFullscreen,
+#whydPlayer #btnShuffle {
+	background: none;
+	padding: 5px;
+	height: auto;
+	width: auto;
+	margin: 0;
+	margin-top: 12px;
+}
+
+#whydPlayer #btnRepost  div,
+#whydPlayer #btnLike    div,
+#whydPlayer #btnComment div,
+#whydPlayer #btnVideo    div,
+#whydPlayer #btnFullscreen div,
+#whydPlayer #btnShuffle div {
+	height: 16px;
+	width: 16px;
+}
+
+#whydPlayer #btnFullscreen {
+	margin-left: 10px;
+	border-left: 1px solid #333;
+	padding-left: 10px;
+}
+
+body.playing_Bandcamp #whydPlayer #btnVideo div,
+body.playing_SoundCloud #whydPlayer #btnVideo div,
+body.playing_Deezer #whydPlayer #btnVideo div,
+body.reduced #whydPlayer #btnVideo div {
+	background-color: red;
+}
+
+body.playing_Bandcamp #whydPlayer #btnVideo > div,
+body.playing_Bandcamp #whydPlayer #btnFullscreen > div,
+body.playing_SoundCloud #whydPlayer #btnVideo > div,
+body.playing_SoundCloud #whydPlayer #btnFullscreen > div,
+body.playing_Deezer #whydPlayer #btnVideo > div,
+body.playing_Deezer #whydPlayer #btnFullscreen > div {
+	opacity: 0.2;
+}
+
+/* other elements */
+
+#whydPlayer a {
+	color: white;
+	font-weight: normal;
+}
+
+#whydPlayer #trackTitle {
+	font-size: 12px;
+	color: #ddd;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 400px;
+	margin-top: 17px;
+	margin-left: 8px;
+}
+
+#whydPlayer #progressTimer {
+	margin-left: 10px;
+	color: #777;
+	font-size: 10px;
+	margin-top: 19px;
+}
+
+#whydPlayer #progressTrack {
+	width: 100%;
+	position: relative;
+	top: -3px;
+	background: gray;
+	cursor: ew-resize;
+	height: 4px;
+	z-index: 5;
+}
+
+#whydPlayer #progressTrack > #progressBar {
+	width: 0px;
+	height: 4px;
+	background: #3177AF;
+}
+
+#whydPlayer #progressTrack > #progressCursor {
+	position: absolute;
+	top: -3px;
+	left: -5px;
+	width: 16px;
+	height: 16px;
+	background-color: #3177AF;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+#whydPlayer .rightButtons {
+	float: right;
+}
+
+#whydPlayer:hover #progressTrack {
+	height:10px;
+	-webkit-transition: all .1s ease-in-out;
+	-moz-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+#whydPlayer:hover #progressTrack > #progressBar {
+	height:10px;
+	-webkit-transition: all .1s ease-in-out;
+	-moz-transition: all .1s ease-in-out;
+	transition: all .1s ease-in-out;
+}
+
+
+/* volume control */
+
+#whydPlayer .volumePanel {
+	float: left;
+	position: relative;
+	padding-top: 17px;
+	margin-left: 16px;
+}
+
+#whydPlayer .volumePanel > div {
+	float: left;
+}
+
+#whydPlayer .volumePanel .volume {
+	width: 16px;
+	height: 16px;
+}
+
+#whydPlayer .volumePanel .volume.half {
+	background-position: 0 -17px;
+}
+
+#whydPlayer .volumePanel .volume.mute {
+	background-position: 0 -34px;
+}
+
+#whydPlayer .volumePanel .progressTrack {
+	margin: 5px 8px;
+	position: relative;
+	width: 40px;
+	height: 3px;
+	background: gray;
+}
+
+#whydPlayer .volumePanel .progressTrack > .progressBar {
+	height: 100%;
+	background: white;
+}
+
+#whydPlayer .volumePanel .progressTrack > .progressCursor {
+	position: absolute;
+	top: -2px;
+	right: -6px;
+	width: 8px;
+	height: 8px;
+	background-color: white;
+		border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+}
+
+#whydPlayer .progressTrack > .progressCursor {
+	display: none;
+}
+
+#whydPlayer .progressTrack.dragging > .progressCursor,
+#whydPlayer:hover .progressTrack > .progressCursor {
+	display: block;
+}
+
+#whydPlayer #trackDragPos {
+	display: none;
+	position: absolute;
+	background-color: #1A1A1A;
+	padding: 2px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	top: -30px;
+	left: 0;
+	color: #ddd;
+}
+</style>
+
+    
+  </head>
+  <body>
+
+    <div class="container">
+      
+<a href="javascript:window.whydPlayer.playAll();">Play all</a>
+
+<div class="posts">
+
+  
+	<div class="post"
+			 data-pid="5b546297314fcb64d074e8d3"
+			 data-initialpid="5b540c4d314fcb64d074e891">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/u8rVPIV-Y4Y"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Paraphon Tree - Firefly (Official Music Video)</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5b326e261db44a36a795f844"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/Y1Kv_sFZHqI"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Yissy García &amp; Bandancha: NPR Music Tiny Desk Concert</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5b2e34f51db44a36a795f4ff"
+			 data-initialpid="520de33ae4d15ab75a0030f5">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/4xgi91s7zf8"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>KADAVAR - Come Back Life (OFFICIAL MUSIC VIDEO)</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5b2b72c11db44a36a795f361"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/sc/ujico/hello#https://api.soundcloud.com/tracks/399253305/stream"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Ujico*/Snail&#39;s House - Hello [Ordinary Songs 4]</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5b17e3071db44a36a795e709"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/7wv3j81GWK0"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Half-Life 2: Cp-Violation Dubstep Remix [ Semi-By FiveSixEight ]</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5b0952fb9b8a8e1d22b108d9"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/LojaV_kXBI4"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Yussef Kamaal - Lowrider</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5af9d534bbcf721689f6faa0"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/C3Z0UWCicLU"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Christian Scott ~ K.K.P.D.</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5af11ccebbcf721689f6f3e1"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/sc/daisrecords/03-39-by-design#https://api.soundcloud.com/tracks/289965719"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Drab Majesty &quot;39 By Design&quot;</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48cebbbcf721689f6e951"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/fv6Y-S5wT4U"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Ryland - Julian Lage - 1/21/2017</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48c04bbcf721689f6e94e"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/MLPWBu_NBiw"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Marmozets - Insomnia (Audio)</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48bcfbbcf721689f6e94d"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/oKz-YAs6ZsA"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Further Seems Forever- The Moon Is Down</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48b43bbcf721689f6e94c"
+			 data-initialpid="5a234e8987c5c453f1788699">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/RzwG3r9_L9o"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>PJ Harvey Rid of Me</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48a95bbcf721689f6e949"
+			 data-initialpid="5907863dc6e0ab344156d698">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/xNAAae1p3Fk"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Turnstile - Bleach Temple (Audio)</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48a46bbcf721689f6e948"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/8uK0GklXc4M"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Open Forum-Snarky Puppy</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48a2cbbcf721689f6e947"
+			 data-initialpid="5463c072c60b72be5e3edd12">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/FuvWc3ToDHg"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>BEACH HOUSE  - &quot;MYTH&quot; (OFFICIAL TRACK)</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae48a01bbcf721689f6e946"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/sc/cidrim/four-eighteen#https://api.soundcloud.com/tracks/337271593/stream"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>CID RIM - Four-Eighteen ft Dorian Concept &amp; The Clonious</h2>
+      </div>
+		</a>
+
+	</div>
+	
+	<div class="post"
+			 data-pid="5ae4896ebbcf721689f6e944"
+			 data-initialpid="">
+
+		<div class="playBar"></div>
+
+		<a href="#"
+			 data-eid="/yt/vHAqBm7Pc9Y"
+			 onclick="return playTrack(this);"
+			 >
+			
+			<div class="play">
+        <h2>Julian Lage &amp; Chris Eldridge - &quot;Rygar&quot; | Fretboard Journal</h2>
+      </div>
+		</a>
+
+	</div>
+	
+
+</div>
+
+<div id="playerContainer">
+	<div id="playerContainerSub">
+		
+		
+	</div>
+</div>
+<div id="whydPlayer">
+  <div id="progressTrack" class="progressTrack">
+  	<div id="progressBar" class="progressBar"></div>
+  	<div id="progressCursor" class="progressCursor"></div>
+  </div>
+  <div class="rightButtons buttons">
+  	
+  	<div class="volumePanel">
+  		<div class="volume">Volume</div>
+  		<div id="volumeTrack" class="progressTrack">
+  			<div class="progressBar"></div>
+  			<div class="progressCursor"></div>
+  		</div>
+  	</div>
+  	
+  </div>
+  <div class="progressPanel buttons">
+  	<button id="btnPrev" onclick="whydPlayer.prev()">Prev</button>
+  	<button id="btnPlay" onclick="whydPlayer.playPause()">Play pause</button>
+  	<button id="btnNext" onclick="whydPlayer.next()">Next</button>
+  	<span id="trackTitle">(none)</span>
+  	<span id="progressTimer"></span>
+  </div>
+  <div id="trackDragPos"></div>
+</div>
+
+    </div>
+
+    
+    <script>
+var DEEZER_APP_ID = 190482;
+var DEEZER_CHANNEL_URL = window.location.href.substr(0, window.location.href.indexOf("/", 10)) + "/html/channel.html";
+var SOUNDCLOUD_CLIENT_ID = "eb257e698774349c22b0b727df0238ad";
+var YOUTUBE_API_KEY = "AIzaSyADm2ekf-_KONB3cSGm1fnuPSXx3br4fvI";
+var JAMENDO_CLIENT_ID = "2c9a11b9";
+</script>
+<script src="/js/ui.js?1.1.1" type="text/javascript" charset="utf-8"></script>
+<script src="/js/swfobject.js?1.1.1" type="text/javascript" charset="utf-8"></script>
+<script src="/js/playem-min.js?1.1.1" type="text/javascript" charset="utf-8"></script>
+<script src="/js/playem-youtube-iframe-patch.js?1.1.1" type="text/javascript" charset="utf-8"></script>
+<script src="/js/whydPlayer.js?1.1.1" type="text/javascript" charset="utf-8"></script>
+
+    
+  </body>
+</html>
