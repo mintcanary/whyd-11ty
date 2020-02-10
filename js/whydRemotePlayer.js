@@ -7,7 +7,7 @@
   var ORIGIN = (wlh.indexOf("http://localhost:") == 0
       || /^https?\:\/\/(\w+)\.openwhyd\.(\w+)(\:8080)?\//.test(wlh))
       ? wlh.substr(0, wlh.indexOf("/", 10))
-      : (window.location.protocol + "//whyd-11ty.netlify.com"), // domain of the iframe's expected host
+      : (window.location.protocol + "//p.smth.uk"), // domain of the iframe's expected host
     EVENTS = [ "onApiReady", "onEmbedReady", "onBuffering", "onPlaying", "onTrackInfo", "onPaused", "onEnded", "onError" ],
     player, eventHandlers = {}, parameters = {};
 
