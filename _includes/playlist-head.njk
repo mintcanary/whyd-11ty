@@ -1,9 +1,9 @@
 <script>
   window.playTrack = window.playTrack || function(){};
 </script>
-<script src="/js/jquery-1.10.2.min.js"></script>
-<script src="/js/jquery-migrate-1.2.1.js"></script>
-<script src="/js/soundmanager2-nodebug-jsmin.js"></script>
+<script src="{{ '/js/jquery-1.10.2.min.js' | url }}"></script>
+<script src="{{ '/js/jquery-migrate-1.2.1.js' | url }}"></script>
+<script src="{{ '/js/soundmanager2-nodebug-jsmin.js' | url }}"></script>
 <script>soundManager.setup({url: "/swf/", flashVersion: 9, onready: function() {soundManager.isReady=true;}});</script>
 
 <style>

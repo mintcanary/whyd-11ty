@@ -6,4 +6,6 @@ module.exports = function(config) {
   config.addPassthroughCopy("html");
 
   passthroughFileCopy: true
+
+  pathPrefix: "/whyd-11ty/"
 };
